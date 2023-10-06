@@ -1,0 +1,21 @@
+\begin{lemma}
+For every continuous curve $y : [t_0, t_1] \mapsto S^2$ in the sphere, there is a vector $L : [t_0, t_1] \mapsto \R^3$ such that $y(t)$ is the solution to the ordinary differential equation 
+\begin{equation}
+    \frac{dx}{dt}(t) = L(t) \times x(t) \qquad x(t_0) = y(t_0)
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Consider $L(t) = \alpha(t) x(t) + x(t) \times \dot x (t)$ for any function $\alpha : \R \mapsto \R$ function. 
+It is easy to check that this satisfies the differential equations. 
+Any value of $\alpha$ will work, meaning that there are many $L(t)$ that will satisfy the differential equation.
+However, notice that $\alpha \equiv 0$ is the one that makes $L(t)$ to have minimal Euclidean norm. 
+\end{proof}
+
+
+
+\subsection{Regularization}
+
+We can add an $L_2$ penalization to find just large circle curves, where the norm of $L(t)$ is as small as possible. 
+
+Piecewise dynamics imposed with Lasso regularization on the first differences of $L(t)$

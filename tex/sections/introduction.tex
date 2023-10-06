@@ -1,3 +1,68 @@
-This is my short introduction.
+Finding smooth approximations to points distributed in the unit sphere play an important role in directional statistics. 
+An important application of such problem is the estimation of Apparent Polar Wander Paths (APWP) in paleomagnetism which describe the relative continental drift of tectonic plates.
+Here, remanent magnetization of rocks is used to estimate directions of the ancient Earth magnetic field. 
+The goal here is to model directions of vectors and ignore the magnitude of the same, reason why working in the unit sphere is the natural setup. 
 
-This is how you add references \cite{jupyterbook}
+In recent years, there has been an increasing interest in combining machine learning algorithms with differential equations. 
+Solutions of differential equations can be used to represent a broad class of functions that can be use for regression purposes. 
+This is the case with Universal Differential Equations (UDE) or neural differential equations, where observations are modelled as the numerical solution of a differential equation that has embedded some form of regressor (for example, a neural network) inside the differential equation \cite{rackauckas2020universal}.  
+
+In this work, we are interested in modelling directional data in three-dimensional spaces using UDEs. 
+Our model addresses the following three major points for data supported in the sphere. 
+We further beleive these consideration are a first step toward more complex models that combine statistical regression with differential equations. 
+\begin{enumerate}
+    \item \textbf{Constrained observations.} In this work we are interested in model data supported in the unit sphere. More generally, there is a rich literature of differential equations with associated conservation laws that will play a similar role. 
+    \item \textbf{Path regularization.} We will start considering the general case on non-parametric regression with no regularization, but we are going to consider different types of regularization that are desired at the moment of fitting APWPs.
+    \item \textbf{Temporal uncertainties.} Ideally, we want a model that can deal with both uncertainties in space and time. Here we want to emphasize the importance of accounting for uncertainties in time, since paleopole dating is a difficult tasks and time estimates tend to carry important uncertainties. 
+\end{enumerate}
+We hope the contributions of this work can help both paleomagnetism to fit APWPs but also the broader community of researchers applying neural differential equations to physical systems. 
+
+
+\subsection{Setup}
+
+Consider a sequence of pairs $(t_i, y_i)$, $i=1, 2, \ldots, N$, where each $t_i$ corresponds to an observed time and each $y_i \in S^2$ is an unit vector supported the the unit sphere $S^2 = \{ x \in \R^3 : \| x \|_2 = 1 \}$. 
+% Each $x$ can be represented in Cartesian coordinates $\mathbf x= (x, y, z)$, with $\| \mathbf x \|_2 = 1$, or in spherical coordinates with its latitude and co-longitude $(\theta, \phi)$, with 
+% \begin{equation}
+%     x = \cos \theta \sin \phi, \, y = \sin \theta \sin \phi, \, z = \cos \phi. 
+% \end{equation}
+% In order to avoid confusion, we are going to use bold characters just for vectors. 
+A rotation matrix $R(p, \theta) \in \R^{3 \times 3}$ is defined by an axis of rotation $p \in S^2$ called Euler pole and an angle of rotation $\theta$.
+Given some vector $x_0$, the rotation matrix $R(p, \theta)$ transforms $x_0$ into $R(p, \theta) x_0$.
+A rotation matrix can be approximated at first-order with respect to the rotation angle as
+\begin{equation}
+    R(p, \theta) 
+    = 
+    I + \theta \, \text{skewt}(d) + \mathcal O (\theta^2 ),
+\end{equation}
+where $ \text{skewt}(p)$ represents the skew-symmetric matrix defined by the rotation axis $p$, which satisfies $\text{skewt}(p)  x =p \times x$ for all vector $x \in \R^3$. 
+If we call $\theta = \omega \Delta t$, with now $\omega$ some angular velocity and $\Delta t$ some time interval over we apply the rotation, as $\Delta t \rightarrow 0$, the successive application of rotation matrix with same Euler pole $p$ correspond to solutions of the differential equation 
+\begin{equation}
+    \frac{dx}{dt} 
+    = 
+    L \times x %, \quad \mathbf x(0) = \mathbf x_0
+\end{equation}
+where $L = \omega p$ can be associated to the angular momentum of the solid sphere, that is, a vector aligned with the rotation axis and with norm equals to $\omega$. 
+
+We will assume that each $y_i$ is a sample from the von Mises-Fisher distribution \cite{fisher1953dispersion, Watson_1982} in the sphere with mean direction $x(t_i)$ and concentration parameter $\kappa_i$, 
+\begin{equation}
+    p(y_i | x, \kappa_i)
+    = 
+    \frac{\kappa_i}{4 \pi \sinh (\kappa_i)} e^{- \kappa_i x(t_i)^T y_i},
+\end{equation}
+where $x(t)$ is the solution of a differential equation. 
+
+
+
+\subsection{Related work}
+
+Running mean
+
+A first approach to fitting smooth path to spherical data was introduced in \cite{Jupp-1987-spherical}, where the authors consider a loss function of the form 
+\begin{equation}
+    \sum_{i=1}^n \cos^{-1}(\ybf_i^T f(t_i))
+    + 
+    \lambda
+    \int \| \nabla_\text{cov}^2 f(t) \|_2^2 dt,
+    \label{eq:jupp_splines_sphere}
+\end{equation}
+where the minimization is perform over all functions $f: \R \mapsto S^2$ and $\nablacov^2 f  = (I - ff^T) f''$ is the second covariant derivative. In the same paper, the authors derive an methodology to minimize such loss function by introducing an \textit{unrolling} procedure that maps points and paths from the sphere to the two-dimensional plane. This leads to the same loss function used in cubic splines but now in Euclidean space, where covariant derivative match the usual derivative. 
