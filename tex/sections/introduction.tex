@@ -37,9 +37,10 @@ A rotation matrix can be approximated at first-order with respect to the rotatio
 where $ \text{skewt}(p)$ represents the skew-symmetric matrix defined by the rotation axis $p$, which satisfies $\text{skewt}(p)  x =p \times x$ for all vector $x \in \R^3$. 
 If we call $\theta = \omega \Delta t$, with now $\omega$ some angular velocity and $\Delta t$ some time interval over we apply the rotation, as $\Delta t \rightarrow 0$, the successive application of rotation matrix with same Euler pole $p$ correspond to solutions of the differential equation 
 \begin{equation}
-    \frac{dx}{dt} 
+    \frac{dx}{dt} (t)
     = 
-    L \times x %, \quad \mathbf x(0) = \mathbf x_0
+    L(t) \times x(t) %, \quad \mathbf x(0) = \mathbf x_0
+    \label{eq:sphere-ode}
 \end{equation}
 where $L = \omega p$ can be associated to the angular momentum of the solid sphere, that is, a vector aligned with the rotation axis and with norm equals to $\omega$. 
 

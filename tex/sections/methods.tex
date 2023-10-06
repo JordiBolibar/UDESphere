@@ -12,10 +12,45 @@ Any value of $\alpha$ will work, meaning that there are many $L(t)$ that will sa
 However, notice that $\alpha \equiv 0$ is the one that makes $L(t)$ to have minimal Euclidean norm. 
 \end{proof}
 
+This previous result give us a general formula to parametrized curves in the sphere. 
+Given observations $y_1, y_2, \ldots, y_N$, we can perform non-parametric regression using \textit{trajectory matching} \cite{ramsay2017dynamic} by optimizing the loss function 
+\begin{equation}
+ \min_{L(t), x_0} \,
+ \sum_{i=1}^N \| y_i - \ODESolve (t_i ; x_0, L(t)) \|_2^2
+\end{equation}
+where $\ODESolve (t_i ; x_0, L(t))$ is the numerical solution of the differential equation \eqref{eq:sphere-ode} with initial condition $x(t_0) = x_0$ and time-dependent angular momentum $L(t)$. 
+In order to solve this optimization problem, we are going to parametrize the function $L: [t_0, t_N] \mapsto \R^3$ with a small neural network with unknown weights and biases. 
+Any other regressor with good expresivity that satisfies that the output is differentiable with respect to its arguments and parameters will serves as well. 
+
+In order to solve the previous problem, we can directly discretize in time, compute the gradient and treat this as a trend filter problem. It is possible that gradients can be computed manually, although the automatic differentiation machinery could work perfectly well here.
+Another option is to directly calculate the continuous adjoint equation and solve it to compute the derivative of the first term. 
+
+Notice that we may also want to include a penalization term of the form $\| L(t) \|_2^2$ in order to penalize rotations with large angular velocity, which we know are not physically feasible. 
 
 
 \subsection{Regularization}
 
+Depending the structure we want to impose in the path, we may be interested in imposing different types of regularization or constraints in the curves we parametrization in the sphere. 
+Expressing curves in $S^2$ as solutions of the differential equations \eqref{eq:sphere-ode} where $L(t)$ is a time-dependent function allow us to directly regularize $L(t)$ instead of the numerical solution $x(t)$. 
+Since $L(t)$ is parametrized at the same time by a neural network or other regressor, this can be easily differentiated, a requirement for the gradient-based optimization procedure.
+
 We can add an $L_2$ penalization to find just large circle curves, where the norm of $L(t)$ is as small as possible. 
 
 Piecewise dynamics imposed with Lasso regularization on the first differences of $L(t)$
+
+Since the output of neural netwer
+
+\subsection{Incorporating time uncertainties}
+
+\begin{equation}
+ \min_{L(t), x_0, \delta} \,
+ \sum_{i=1}^N \| y_i - \ODESolve (t_i + \delta_i; x_0, L(t)) \|_2^2
+ + 
+ \lambda_1 
+ \Reg (L(t))
+ + 
+ \lambda_2 
+ h(\| \delta \|_2)
+\end{equation}
+where $h:\R \mapsto \R$ is an Huber function.
+

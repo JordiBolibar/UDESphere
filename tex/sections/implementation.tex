@@ -1,0 +1,5 @@
+In order to solve the previous problem, we can directly discretize in time, compute the gradient and treat this as a trend filter problem. 
+It is possible that gradients can be computed manually, although the automatic differentiation machinery could work perfectly well here.
+Another option is to directly calculate the continuous adjoint equation and solve it to compute the derivative of the first term. 
+
+Discuss discrete vs continuous discretization 
