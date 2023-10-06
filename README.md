@@ -1,8 +1,8 @@
 ![example workflow](https://github.com/facusapienza21/myproject/actions/workflows/latex.yml/badge.svg)
 
-# My Project
+# Fitting paths in the sphere using Universal Differential Equations
 
-The goal of this respository is to serve as a template for scientitic projects that are fully developed in the open. This repository includes all the basic ingredients of a scientific project, including code and writing.
+Fitting smooth paths with regularization in the sphere is an important problem in directional statistics and has important application to the estimation of apparent polar paths in paleomagnetism. This projects explores the use of Universal Differential Equations, also known as neural differential equations, to make non-parametric regression in the sphere. 
 
 ## Code :computer:
 
@@ -18,7 +18,7 @@ This repository is organized in a way that contains most of the important elemen
 
 ### Continuous integrations
 
-This repository has a [workflow](https://github.com/facusapienza21/myproject/blob/main/.github/workflows/latex.yml) implemented that automatically compiles the latex files into the file `main.pdf` and then commits this file directy to the repository. 
+This repository has a [workflow](https://github.com/facusapienza21/UDESphere/blob/main/.github/workflows/latex.yml) implemented that automatically compiles the latex files into the file `main.pdf` and then commits this file directy to the repository. 
 If you are working from your fork, this action should also work and you should be able to generate the pdf file automatically using GitHub actions. 
 
 ### Makefile
