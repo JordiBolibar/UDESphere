@@ -33,12 +33,30 @@ Notice that we may also want to include a penalization term of the form $\| L(t)
 Depending the structure we want to impose in the path, we may be interested in imposing different types of regularization or constraints in the curves we parametrization in the sphere. 
 Expressing curves in $S^2$ as solutions of the differential equations \eqref{eq:sphere-ode} where $L(t)$ is a time-dependent function allow us to directly regularize $L(t)$ instead of the numerical solution $x(t)$. 
 Since $L(t)$ is parametrized at the same time by a neural network or other regressor, this can be easily differentiated, a requirement for the gradient-based optimization procedure.
-
-We can add an $L_2$ penalization to find just large circle curves, where the norm of $L(t)$ is as small as possible. 
-
-Piecewise dynamics imposed with Lasso regularization on the first differences of $L(t)$
-
-Since the output of neural netwer
+In this work we are going to consider regularizations of the form 
+\begin{equation}
+    \Reg_k^p (L(\cdot))
+    = 
+    \int_{t_0}^{t_1} \left \| \frac{d^k L}{dt^k} (\tau) \right \|_p^p d\tau
+\end{equation}
+with $k$ the order derivative ($k=0$ for no derivative) and $p$ the type of penallization ($p=1$ for Lasso, $p=2$ for Ridge).
+Examples of these form of regularization include
+\begin{enumerate}
+    \item \textbf{Small angular velocities.} As we described in our previous result, there are many instant rotations that give rise to the same differential path. If we are interested in finding the rotation with minimum angular velocity, we can add a the penalty
+    \begin{equation}
+        \Reg_0^2 (L(\cdot)) = \int_{t_0}^{t_1} \| L(\theta) \|_2^2 d\tau
+    \end{equation}
+    \item \textbf{Smooth trajectories.}
+    \begin{equation}
+        \Reg_1^2 (L(\cdot)) = \int_{t_0}^{t_1} \left \| \frac{dL}{dt}(\tau) \right \|_2^2 d\tau
+    \end{equation}
+    \item \textbf{Piecewise dynamics. } It is usally assumed that APWPs in paleomagnetism consist on a sequence of solid rotations that stay stable over certain periods of time. Since constant values of $L(t)$ are associated to constant rotations with fixed rotation axis and angular velocity, we can impose sparse changes in the values of $L(t)$ by a Lasso penalty in the first derivatives of $L(t)$:
+    \begin{equation}
+        \Reg_1^1 (L(\cdot)) = \int_{t_0}^{t_1} \left \| \frac{dL}{dt}(\tau) \right \|_1 d\tau
+    \end{equation}
+    This is the continuous version of the trend filtering problem \cite{tibs-trend-filter}.
+\end{enumerate}
+Notice that we have used the unified notation 
 
 \subsection{Incorporating time uncertainties}
 
@@ -53,4 +71,6 @@ Since the output of neural netwer
  h(\| \delta \|_2)
 \end{equation}
 where $h:\R \mapsto \R$ is an Huber function.
+
+\subsection{Optimize and discretize vs Discretize and optimize}
 
