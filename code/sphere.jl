@@ -14,7 +14,7 @@ using Distributions
 
 using Infiltrator
 
-# Set a random seed for reproduceable behaviour
+# Set a random seed for reproducible behaviour
 using Random
 rng = Random.default_rng()
 Random.seed!(rng, 000666)
@@ -25,8 +25,15 @@ p = 0.1 .* [1.0, 0.0, 0.0]
 reltol = 1e-7
 abstol = 1e-7
 κ = 10000 # Fisher concentration parameter on observations (small = more dispersion)
-λ = 0.0
+
+# Regularization 
+# λ = 0.0
 # λ = 1.0 # This works well! 
+do_regularization_02, λ₀₂ = false, 0.0
+do_regularization_12, λ₁₂ = false, 0.0
+do_regularization_11, λ₁₁ = false, 0.0
+
+do_regularization_DiscretizeFirst = true
 
 # ###################################################
 # ############    Real Solution     #################
@@ -121,29 +128,52 @@ end
 
 function loss(θ)
     u_ = predict(θ)
+    l_ = 0.0
 
     # Empirical error
     l_emp = mean(abs2, u_ .- X_true)
+    l_ += l_emp
 
-    # Regularization
-    l_reg = 0.0
-    if λ != 0.0
-    times_reg = collect(tspan[1]:5.0:tspan[2])
-    for i in 1:(size(times_reg)[1]-1)
-        # Solution using AD
-    #     # this works, but it is slow!!!
-        # t = times_reg[i]
-        # l_reg .+= norm(jacobian(x -> U([x], p, st)[1], t)[1]) 
-        # Discrete solution
-        t0 = times_reg[i]
-        t1 = times_reg[i+1]
-        l_reg_t = norm(U([t1], θ, st)[1] .- U([t0], θ, st)[1])
-        l_reg += l_reg_t
+    if do_regularization_DiscretizeFirst
+        times_reg = collect(tspan[1]:5.0:tspan[2])
+        
+        # encapsulate all regularizations here..
+        
+        l_reg = 0.0 
+        for i in 1:(size(times_reg)[1]-1)
+            t0 = times_reg[i]
+            t1 = times_reg[i+1]
+            l_reg_t = norm(U([t1], θ, st)[1] .- U([t0], θ, st)[1])
+            l_reg += l_reg_t    
+        end
+        l_reg /= size(times_reg)[1]
+        l_ += l_reg
+    else
+        throw("Method no implemeted")
+        # l_reg .+= norm(jacobian(x -> U([x], p, st)[1], t)[1])
     end
-    l_reg /= size(times_reg)[1]
-    end # if
+
+    return l_
+
+    # # Regularization
+    # l_reg = 0.0
+    # if λ != 0.0
+    # times_reg = collect(tspan[1]:5.0:tspan[2])
+    # for i in 1:(size(times_reg)[1]-1)
+    #     # Solution using AD
+    # #     # this works, but it is slow!!!
+    #     # t = times_reg[i]
+    #     # l_reg .+= norm(jacobian(x -> U([x], p, st)[1], t)[1]) 
+    #     # Discrete solution
+    #     t0 = times_reg[i]
+    #     t1 = times_reg[i+1]
+    #     l_reg_t = norm(U([t1], θ, st)[1] .- U([t0], θ, st)[1])
+    #     l_reg += l_reg_t
+    # end
+    # l_reg /= size(times_reg)[1]
+    # end # if
     
-    return l_emp + λ * l_reg
+    # return l_emp + λ * l_reg
 end
 
 losses = Float64[]
