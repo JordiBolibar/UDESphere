@@ -74,3 +74,9 @@ where $h:\R \mapsto \R$ is an Huber function.
 
 \subsection{Optimize and discretize vs Discretize and optimize}
 
+
+When we use an $L_1$ penalty in the loss function applied directly to the output of the neural network, we have the problem  of how to impose that the output of the neural networks has to take discontinuous jumps.
+This is specially the case when we decide to discretize first. 
+In continuous based optimization, it will be very difficult to obtain solutions for the weights of the neural network that make the function to have constant output. 
+
+For this case, optimization can be carried out with Alternating Direction Method of Multipliers (ADMM).
