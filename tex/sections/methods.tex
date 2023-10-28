@@ -6,9 +6,18 @@ For every continuous curve $y : [t_0, t_1] \mapsto S^2$ in the sphere, there is 
 \end{lemma}
 
 \begin{proof}
-Consider $L(t) = \alpha(t) x(t) + x(t) \times \dot x (t)$ for any function $\alpha : \R \mapsto \R$ function. 
-It is easy to check that this satisfies the differential equations. 
-Any value of $\alpha$ will work, meaning that there are many $L(t)$ that will satisfy the differential equation.
+Consider $L(t) = \alpha(t) x(t) + x(t) \times \dot x (t)$ for any function $\alpha : [t_0, t_1] \mapsto \R$ function. 
+Using basic properties of the cross product, we have 
+\begin{equation}
+    L(t) \times x(t)
+    = 
+    (x(t) \times \dot x (t)) \times x(t)
+    = 
+    \dot x(t) \| x(t) \|_2^2 - x(t) (x(t) \cdot \dot x(t)).
+\end{equation}
+Since $x(t) \in S^2$, we have $\| x(t) \|_2 = 1$ and $x(t) \cdot \dot x(t) = 0$.
+Notice that any value of $\alpha(t)$ will satisfy the differential equation , meaning that there are many $L(t)$ that will satisfy the differential equation.
+This is because infinitesimal variations of a path in a sphere are isomorphic to the tangent plane of $S^2$ at $x(t)$, instead of all the full group $\mathfrak{so}(3)$.
 However, notice that $\alpha \equiv 0$ is the one that makes $L(t)$ to have minimal Euclidean norm. 
 \end{proof}
 
